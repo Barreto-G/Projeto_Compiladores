@@ -25,28 +25,30 @@ int funcaoHash(string s, int M){
 class TabelaChave{
 
     public:
-        TabelaChave(int cap);
+        TabelaChave();
         ~TabelaChave();
-        void insere(std::string cadeia, std::string categoria, std::string tipo);
-        void remove(string cadeia);
+
         string recupera(string cadeia);
         void percorre();
 
 
 
     private:
+        void inserirPalavrasChave();
         PalavraReservada** elementos; //Define um vetor de ponteiros para os elementos na tabela de simbolos
-        int capacidade; //Vai ditar a capacidade da tabela de simbolos
+        int capacidade = 50; //Vai ditar a capacidade da tabela de simbolos
+        void insere(std::string cadeia, std::string categoria, std::string tipo);
+        void remove(string cadeia);
 
 };
 
-TabelaChave::TabelaChave(int cap=100){
-    capacidade = cap;
-    elementos = new PalavraReservada*[cap];   //define elementos como um vetor de ponteiros de capacidade igual a passada no construtor
+TabelaChave::TabelaChave(){
+    elementos = new PalavraReservada*[capacidade];   //define elementos como um vetor de ponteiros de capacidade igual a passada no construtor
 
-    for (int i = 0; i < cap; i++){  //Vai inicializar todas as posicoes da tabela como null
+    for (int i = 0; i < capacidade; i++){  //Vai inicializar todas as posicoes da tabela como null
         elementos[i] = NULL;
     }
+    inserirPalavrasChave();
 }
 
 TabelaChave::~TabelaChave(){
@@ -145,6 +147,50 @@ void TabelaChave::percorre(){  //Imprime a toda a tabela hash posicao por posica
         cout<< "NULL"<< endl;
     }
     cout<<"!------------------------!"<< endl;
+}
+
+void TabelaChave::inserirPalavrasChave(){
+
+    //PALAVRAS RESERVADAS PARA FUNCOES
+    insere("SE", "TokIf", "PALAVRA_RESERVADA");
+    insere("SENAO", "TokElse", "PALAVRA_RESERVADA");
+    insere("PARA", "TokFor", "PALAVRA_RESERVADA");
+    insere("ENQUANTO", "TokWhile", "PALAVRA_RESERVADA");
+    insere("REGRADETRES", "TokRegraDeTres", "PALAVRA_RESERVADA");
+    insere("PRINCIPAL", "TokMain", "PALAVRA_RESERVADA");
+
+    //PALAVRAS RESERVADAS PARA TIPOS
+    insere("INTEIRO", "TokInt", "TIPO");
+    insere("FLUTUANTE", "TokFloat", "TIPO");
+    insere("CARACTERE", "TokChar", "TIPO");
+    insere("SIMOUNAO", "TokBool", "TIPO");
+
+    //PALAVRAS RESERVADAS PARA OPERADORES
+    insere("MAIS", "TokMais", "OPERADOR");
+    insere("MENOS", "TokMenos", "OPERADOR");
+    insere("VEZES", "TokVezes", "OPERADOR");
+    insere("DIVIDIDO", "TokDiv", "OPERADOR");
+    insere("IGUAL", "TokAtribuicao", "OPERADOR");
+    insere("DIFERENTE", "TokDiferente", "OPERADOR");
+    insere("MAIOR", "TokMaior", "OPERADOR");
+    insere("MENOR", "TokMenor", "OPERADOR");
+    insere("MAIOROUIGUAL", "TokMaiorIgual", "OPERADOR");
+    insere("MENOROUIGUAL", "TokMenorIgual", "OPERADOR");
+    insere("NAO", "TokNegacao", "OPERADOR");
+    insere("E", "TokAnd", "OPERADOR");
+    insere("OU", "TokOr", "OPERADOR");
+    insere("COMPARADO", "TokComparacao", "OPERADOR");
+
+    //PALAVRAS RESERVADAS PARA SIMBOLOS DE DELIMITACAO
+    insere(";", "TokPv", "DELIMITADOR");
+    insere("(", "TokAbreParenteses", "DELIMITADOR");
+    insere(")", "TokFechaParenteses", "DELIMITADOR");
+    insere("{", "TokAbreChaves", "DELIMITADOR");
+    insere("}", "TokFechaChaves", "DELIMITADOR");
+    insere("[", "TokAbreColchetes", "DELIMITADOR");
+    insere("]", "TokFechaColchetes", "DELIMITADOR");
+
+
 }
 
 #endif

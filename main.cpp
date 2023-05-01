@@ -12,11 +12,14 @@ int main(){
     table->percorre();
     delete(table);*/
 
-    TabelaChave *reservadas = new TabelaChave(10);
+    TabelaChave *reservadas = new TabelaChave();
+    /*
     reservadas->insere("ENQUANTO", "TokEnquanto", "PALAVRA_RESERVADA");
     reservadas->insere("PARA", "TokPara", "PALAVRA_RESERVADA");
     reservadas->insere("MAIS", "TokMais", "OPERADOR");
     reservadas->insere("MENOS", "TokMenos", "OPERADOR");
+    */
+    
     reservadas->percorre();
     delete(reservadas);
 
