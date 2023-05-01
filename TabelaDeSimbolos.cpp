@@ -3,7 +3,7 @@
 
 using namespace std;
 
-#ifdef TABELASIMBOLOS
+#ifndef TABELASIMBOLOS
 #define TABELASIMBOLOS
 
 
@@ -12,10 +12,10 @@ const int PRIMO = 37;
 
 int funcaoHash(string s, int M){
     long h = 0;
-    for(unsigned i = 0; i<s.lenght(), i++){
-        h = (PRIMO * h + s[i]) % M
+    for(unsigned i = 0; i<s.length(); i++){
+        h = (PRIMO * h + s[i]) % M;
     }
-
+    //cout<<h<<endl;
     return h;
 }
 
@@ -34,14 +34,14 @@ class TabelaDeSimbolos{
 
 
     private:
-        Tokens** elementos; //Define um vetor de ponteiros para os elementos na tabela de simbolos
+        Token** elementos; //Define um vetor de ponteiros para os elementos na tabela de simbolos
         int capacidade; //Vai ditar a capacidade da tabela de simbolos
 
 };
 
 TabelaDeSimbolos::TabelaDeSimbolos(int cap=100){
     capacidade = cap;
-    elementos = new Tokens*[cap];   //define elementos como um vetor de ponteiros de capacidade igual a passada no construtor
+    elementos = new Token*[cap];   //define elementos como um vetor de ponteiros de capacidade igual a passada no construtor
 
     for (int i = 0; i < cap; i++){  //Vai inicializar todas as posicoes da tabela como null
         elementos[i] = NULL;
@@ -87,38 +87,38 @@ void TabelaDeSimbolos::insere(string type, string identificador, string value, i
 string TabelaDeSimbolos::recupera(string identificador){
     string aux = identificador;
     int hash = funcaoHash(aux, capacidade);
-    if (elementos[hash] != NULL and elementos[hash]->id == identificador){  //Se o id passado esta numa posicao na tabela no inicio da lista, retorna seu id
+    if (elementos[hash] != NULL && elementos[hash]->id == identificador){  //Se o id passado esta numa posicao na tabela no inicio da lista, retorna seu id
         return elementos[hash]->id;
     }
     else{       //Senao percorre toda a lista ligada na posicao da hash para encontrar o id, caso a posicao esteja nula ou nao haja esse valor naquela posicao, retorna nao encontrado
         Token* atual = elementos[hash];
         
-        while (atual != NULL and atual->id != identificador){
+        while (atual != NULL && atual->id != identificador){
             atual = atual->prox;
         }
 
-        if (atual != NULL and atual->id == identificador){
+        if (atual != NULL && atual->id == identificador){
             return atual->id;
         }
         else{
-            return "NÂO ENCONTRADO";
+            return "NAO ENCONTRADO";
         }
     }
 }
 
 void TabelaDeSimbolos::altera(string identificador, string valor, int novaLinha, int novaColuna){
     int hash = funcaoHash(identificador, capacidade);
-    if(elementos[hash]!=NULL and elementos[hash]->id==identificador){
-        elementos[hash]->nova_ocorrencia(int novaLinha, int novaColuna, string valor);  //Registra a alteracao de valor e onde a foi mudado: linha e coluna
+    if(elementos[hash]!=NULL && elementos[hash]->id==identificador){
+        elementos[hash]->nova_ocorrencia(novaLinha, novaColuna, valor);  //Registra a alteracao de valor e onde a foi mudado: linha e coluna
 
     }
     else{
         Token* atual = elementos[hash];         //Novamente, se o valor nao estiver na primeira posicao da fila, percorre ela ate achar o id certo, registrando a alteracao
-        while(atua!=NULL and atual->id != identificador){
+        while(atual!=NULL && atual->id != identificador){
             atual = atual->prox;
         }
-        if(atual!=NULL and atual->id == identificador){
-            atual->valor->nova_ocorrencia(int novaLinha, int novaColuna, string valor);
+        if(atual!=NULL && atual->id == identificador){
+            atual->nova_ocorrencia(novaLinha, novaColuna, valor);
         }
         else{
             cout<<"Erro na alteracao"<< endl;   //esses couts devem ser substituidos por excessoes
@@ -128,7 +128,7 @@ void TabelaDeSimbolos::altera(string identificador, string valor, int novaLinha,
 
 void TabelaDeSimbolos::remove(string identificador){
     int hash = funcaoHash(identificador, capacidade);
-    if (elementos[hash] != NULL and elementos[hash]->id == identificador){
+    if (elementos[hash] != NULL && elementos[hash]->id == identificador){
         Token* aux = elementos[hash];
         elementos[hash] = elementos[hash]->prox;
         delete aux;
@@ -136,12 +136,12 @@ void TabelaDeSimbolos::remove(string identificador){
     else {
         Token* atual = elementos[hash];
         Token* anterior;
-        while (atual != NULL and atual->id != identificador){
+        while (atual != NULL && atual->id != identificador){
             anterior = atual;
             atual = atual->prox;
         }
-        if (atual != NULL and atual->id == identificador){
-            anterior->proximo = atual->proximo;
+        if (atual != NULL && atual->id == identificador){
+            anterior->prox = atual->prox;
             delete atual;
         } 
         else {
@@ -158,7 +158,7 @@ void TabelaDeSimbolos::percorre(){  //Imprime a toda a tabela hash posicao por p
         atual = elementos[i];
         while(atual!=NULL){
             cout<<"{TIPO:["<< atual->tipo<<"] ID: ["<<atual->id<< "] VALOR:[" << atual->valor<< "]} -->";
-            atual = atual->proximo;
+            atual = atual->prox;
         }
         cout<< "NULL"<< endl;
     }

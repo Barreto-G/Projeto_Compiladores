@@ -28,15 +28,19 @@ class Token{
         valor = value;
         id = identificador;
         tipo = type;
-        posicoes[contador_posicoes].push_back(coluna);
-        posicoes[contador_posicoes].push_back(linha);
+        std::vector<int> aux;
+        aux.push_back(coluna);
+        aux.push_back(linha);
+        posicoes.push_back(aux);
         contador_posicoes++;
     }
 
     void Token::nova_ocorrencia(int linha, int coluna, std::string value){
         valor = value;
-        posicoes[contador_posicoes].push_back(coluna);
-        posicoes[contador_posicoes].push_back(linha);
+        std::vector<int> aux;
+        aux.push_back(coluna);
+        aux.push_back(linha);
+        posicoes.push_back(aux);
         contador_posicoes++;
     }
 

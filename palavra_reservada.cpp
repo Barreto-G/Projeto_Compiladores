@@ -7,11 +7,13 @@ class PalavraReservada{
     std::string categoria, tipo, cadeia;
 
     public:
-    PalavraReservada(std::string cadeia);
+    PalavraReservada(std::string cadeia, std::string categoria, std::string tipo);
 
 };
 
-    PalavraReservada::PalavraReservada(std::string cadeia){
+    PalavraReservada::PalavraReservada(std::string cadeia, std::string categoria, std::string tipo){
         PalavraReservada::cadeia = cadeia;
+        PalavraReservada::categoria = categoria;
+        PalavraReservada::tipo = tipo;
         
     }
