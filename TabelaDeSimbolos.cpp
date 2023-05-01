@@ -3,8 +3,9 @@
 
 using namespace std;
 
-#ifndef TABELASIMBOLOS
-#define TABELASIMBOLOS
+
+#ifndef FUNCAOHASH
+#define FUNCAOHASH
 
 
 const int PRIMO = 37;
@@ -15,10 +16,12 @@ int funcaoHash(string s, int M){
     for(unsigned i = 0; i<s.length(); i++){
         h = (PRIMO * h + s[i]) % M;
     }
-    //cout<<h<<endl;
     return h;
 }
+#endif
 
+#ifndef TABELASIMBOLOS
+#define TABELASIMBOLOS
 
 class TabelaDeSimbolos{
 
