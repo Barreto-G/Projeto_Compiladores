@@ -72,7 +72,7 @@ void TabelaChave::insere(std::string cadeia, std::string categoria, std::string 
             elementos[hash] = new PalavraReservada(cadeia, categoria, tipo);
         }
         else{                               //Se ja houver um elemento naquela posicao, percorre toda a lista ligada para inserir o novo token no final dela
-            cout<<"Colidiu: "<< aux << endl;
+            //cout<<"Colidiu: "<< aux << endl;
             PalavraReservada* atual = elementos[hash];
             while(atual->prox != NULL){
                 atual = atual->prox;
@@ -101,7 +101,7 @@ string TabelaChave::recupera(string cadeia){
         }
 
         if (atual != NULL && atual->cadeia == cadeia){
-            return atual->cadeia;
+            return atual->categoria;
         }
         else{
             return "NAO ENCONTRADO";
@@ -158,6 +158,7 @@ void TabelaChave::inserirPalavrasChave(){
     insere("ENQUANTO", "TokWhile", "PALAVRA_RESERVADA");
     insere("REGRADETRES", "TokRegraDeTres", "PALAVRA_RESERVADA");
     insere("PRINCIPAL", "TokMain", "PALAVRA_RESERVADA");
+    insere("RETORNA", "TokReturn", "PALAVRA_RESERVADA");
 
     //PALAVRAS RESERVADAS PARA TIPOS
     insere("INTEIRO", "TokInt", "TIPO");

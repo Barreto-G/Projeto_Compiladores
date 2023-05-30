@@ -72,7 +72,7 @@ void TabelaDeSimbolos::insere(string type, string identificador, string value, i
             elementos[hash] = new Token(type, identificador, value, linha, coluna);
         }
         else{                               //Se ja houver um elemento naquela posicao, percorre toda a lista ligada para inserir o novo token no final dela
-            cout<<"Colidiu: "<< aux << endl;
+            //cout<<"Colidiu: "<< aux << endl;
             Token* atual = elementos[hash];
             while(atual->prox != NULL){
                 atual = atual->prox;

@@ -42,7 +42,10 @@
         "xmemory": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "string": "cpp",
+        "fstream": "cpp",
+        "*.tcc": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false
 }
