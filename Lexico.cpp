@@ -25,7 +25,7 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
     return 0;
     }
 
-    ofstream arquivo2("teste2.txt");
+    ofstream arquivo2("teste2.txt", ofstream::out);
     if (!arquivo2.is_open()) {
     cout << "Arquivo de tokens nao pode ser aberto";
     return 0;
@@ -79,7 +79,6 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
             }
             else {
                 aux = reservadas->recupera(lexema);
-                cout << "\nlexema encontrado: " << lexema << "\n";
                 if (aux == "NAO ENCONTRADO") {
                     count_id++;
                     table->insere("IDENTIFICADOR",lexema, to_string(count_id), count_linha, count_coluna);
@@ -111,6 +110,7 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
             }
         }
          if (caracter == 39) {
+            lexema.push_back(caracter);
             count_coluna++;
             caracter = arquivo1.get();
             if (caracter == 39) {
@@ -122,6 +122,7 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
                 lexema.push_back(caracter);
                 caracter = arquivo1.get();
                 if (caracter == 39) {
+                    lexema.push_back(caracter);
                     count_coluna++;
                     count_id++;
                     table->insere("CHAR", lexema, to_string(count_id), count_linha, count_coluna);

@@ -91,7 +91,7 @@ string TabelaChave::recupera(string cadeia){
     string aux = cadeia;
     int hash = funcaoHash(aux, capacidade);
     if (elementos[hash] != NULL && elementos[hash]->cadeia == cadeia){  //Se o id passado esta numa posicao na tabela no inicio da lista, retorna seu id
-        return elementos[hash]->cadeia;
+        return elementos[hash]->categoria;
     }
     else{       //Senao percorre toda a lista ligada na posicao da hash para encontrar o id, caso a posicao esteja nula ou nao haja esse valor naquela posicao, retorna nao encontrado
         PalavraReservada* atual = elementos[hash];

@@ -1,8 +1,0 @@
-<PRINCIPAL><TokAbreParenteses><TokFechaParenteses><TokAbreChaves>
-<INTEIRO><TokID,1><IGUAL><TokNumint,2><TokPv>
-<INTEIRO><TokID,3><IGUAL><TokNumint,4><TokPv>
-<INTEIRO><TokID,5><TokPv>
-<TokID,6><IGUAL><TokID,7><MAIS><TokID,8><TokPv>
-<TokID,9><TokID,10><IGUAL><TokCaractere><TokPv>
-<RETORNA><TokNumint,12><TokPv>
-<TokFechaChaves>

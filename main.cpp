@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdio>
 #include "TabelaDeSimbolos.cpp"
 #include "Tabela_palavras_chave.cpp"
 #include "Lexico.cpp"
@@ -14,10 +15,11 @@ int main(){
 
     programa_valido = analisarLexico(table, reservadas);
     if (programa_valido == false) return 0;
-    cout << "\n\n ANALISE LEXICA CONCLUIDA: NENHUM ERRO ENCONTRADO";
+    cout << "\n\n ANALISE LEXICA CONCLUIDA: NENHUM ERRO ENCONTRADO\n\n";
 
     
     delete(reservadas);
     delete(table);
+    remove("teste2.txt");
     return 0;
 }
