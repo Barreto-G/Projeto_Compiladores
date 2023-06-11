@@ -184,6 +184,8 @@ void TabelaChave::inserirPalavrasChave(){
 
     //PALAVRAS RESERVADAS PARA SIMBOLOS DE DELIMITACAO
     insere(";", "TokPv", "DELIMITADOR");
+    insere(".", "TokP", "DELIMITADOR");
+    insere(",", "TokV", "DELIMITADOR");
     insere("(", "TokAbreParenteses", "DELIMITADOR");
     insere(")", "TokFechaParenteses", "DELIMITADOR");
     insere("{", "TokAbreChaves", "DELIMITADOR");

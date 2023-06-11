@@ -39,8 +39,8 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
                 count_coluna = 0;
                 arquivo2 << "\n";
         }
-        if (caracter >= 48 and caracter <= 57) {
-            while (caracter >= 48 and caracter <= 57) {
+        if (caracter >= 48 && caracter <= 57) {
+            while (caracter >= 48 && caracter <= 57) {
                 lexema.push_back(caracter);
                 count_coluna++;
                 caracter = arquivo1.get();
@@ -67,8 +67,8 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
             }
             count_coluna++;
         }
-        if ((caracter >= 65 and caracter <= 90) or (caracter >= 97 and caracter <= 122)) {
-            while((caracter >= 65 and caracter <= 90) or (caracter >= 97 and caracter <= 122) or (caracter >= 48 and caracter <= 57)) {
+        if ((caracter >= 65 && caracter <= 90) || (caracter >= 97 && caracter <= 122)) {
+            while((caracter >= 65 && caracter <= 90) || (caracter >= 97 && caracter <= 122) || (caracter >= 48 && caracter <= 57)) {
                 lexema.push_back(caracter);
                 count_coluna++;
                 caracter = arquivo1.get();
@@ -166,7 +166,7 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
         if (caracter == 125) {
             count_coluna++;
             caracter = arquivo1.get();
-            if (caracter == '\n' or arquivo1.eof() == true) {
+            if (caracter == '\n' || arquivo1.eof() == true) {
                 count_linha++;
                 count_coluna = 0;
                 arquivo2 << "<TokFechaChaves>\n";
