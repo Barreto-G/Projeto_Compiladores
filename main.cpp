@@ -20,6 +20,7 @@ int main(){
     
     delete(reservadas);
     delete(table);
-    remove("teste2.txt");
+    //remove("teste2.txt");
+    
     return 0;
 }
