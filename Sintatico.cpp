@@ -1,15 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cctype>
 #include "Sintatico.h"
 
-// Função para verificar se um caractere é um espaço em branco
 bool ehEspacoEmBranco(char c) {
     return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
 }
 
-// Função para consumir espaços em branco
 void ConsomeEspacoEmBranco() {
     while (posicao < entrada.length() && ehEspacoEmBranco(entrada[posicao])) {
         posicao++;
@@ -26,7 +23,6 @@ bool ehPrograma() {
             return false;
         if(posicao >= entrada.length())
             return false;
-        posicao++;
         ConsomeEspacoEmBranco();
     }
 
@@ -34,6 +30,9 @@ bool ehPrograma() {
         if(posicao >= entrada.length())
             return true;
     }
+
+    if(posicao >= entrada.length())
+            return true;
     
     return false;
 }
@@ -62,11 +61,9 @@ bool ehPrincipal() {
     ConsomeEspacoEmBranco();
 
     if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-        while(true) {
 
-            if(!ehListaDeParametros()) {
-                break;
-            }
+        if(!ehListaDeParametros()) {
+            return false;
         }
     }
 
@@ -77,7 +74,7 @@ bool ehPrincipal() {
     posicao += 20;
     ConsomeEspacoEmBranco();
 
-    if(!ehDeclaracaoComposta) {
+    if(!ehDeclaracaoComposta()) {
         return false;
     }
 
@@ -110,7 +107,7 @@ bool ehDefinicaoDeFuncao() {
     ConsomeEspacoEmBranco();
 
     if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-        // Reconhecer lista de parâmetros
+
         while (true) {
             if (!ehEspecificadorDeTipo()) {
                 return false;
@@ -125,7 +122,7 @@ bool ehDefinicaoDeFuncao() {
             ConsomeEspacoEmBranco();
 
             if (entrada.substr(posicao, 6) != "<TokV>") {
-                posicao += 6;
+                posicao ++;
                 ConsomeEspacoEmBranco();
                 break;
             }
@@ -149,9 +146,23 @@ bool ehDefinicaoDeFuncao() {
     return true;
 }
 
+bool ehEspecificadorDeTipo() {
+    std::string tipos[] = {"<TokInt>", "<TokFloat>", "<TokChar>", "<TokBool>"};
+
+    for (const std::string& tipo : tipos) {
+        if (entrada.substr(posicao, tipo.length()) == tipo) {
+            posicao += tipo.length();
+            ConsomeEspacoEmBranco();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool ehListaDeParametros() {
     
-    if(!ehParametro) {
+    if(!ehParametro()) {
         return false;
     }
 
@@ -159,14 +170,13 @@ bool ehListaDeParametros() {
         return true;
     }
 
-    posicao++;
+    posicao += 6;
     ConsomeEspacoEmBranco();
 
-    if(!ehListaDeParametros) {
+    if(!ehListaDeParametros()) {
         return false;
     }
 
-    posicao++;
     ConsomeEspacoEmBranco();
 
     return true;
@@ -185,8 +195,6 @@ bool ehParametro() {
     if(!ehIdentificador()) {
         return false;
     }
-
-    posicao++;
     ConsomeEspacoEmBranco();
 
     return true;
@@ -196,11 +204,11 @@ bool ehDeclaracaoComposta() {
 
     ConsomeEspacoEmBranco();
 
-    if(entrada[posicao] != '{') {
+    if(entrada.substr(posicao, 15) != "<TokAbreChaves>") {
         return false;
     }
 
-    posicao++;
+    posicao += 15;
     ConsomeEspacoEmBranco();
 
     if(!ehListaDeDeclaracao()) {
@@ -209,11 +217,11 @@ bool ehDeclaracaoComposta() {
 
     ConsomeEspacoEmBranco();
 
-    if(entrada[posicao] != '}') {
+    if(entrada.substr(posicao, 16) != "<TokFechaChaves>") {
         return false;
     }
 
-    posicao++;
+    posicao += 16;
     ConsomeEspacoEmBranco();
 
     return true;
@@ -225,252 +233,496 @@ bool ehListaDeDeclaracao(){
         return false;
     }
 
-    posicao++;
     ConsomeEspacoEmBranco();
 
-    if(!ehListaDeDeclaracao && entrada[posicao] != '}')
+    if(!ehListaDeDeclaracao() && entrada[posicao] != '<')
         return false;
 
-    posicao++;
     ConsomeEspacoEmBranco();
 
     return true;
 }
-
 
 bool ehDeclaracao() {
 
+    if(!ehDeclaracaoDeExpressao() && !ehDeclaracaoComposta() && !ehDeclaracaoDeSelecao() && 
+    !ehDeclaracaoDeIteracao() && !ehDeclaracaoDeRetorno()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 7) == "<TokPv>") {
+        posicao += 7;
+        ConsomeEspacoEmBranco();
+    }
+
     return true;
 }
 
-// Função para reconhecer um tipo especificador
-bool ehEspecificadorDeTipo() {
-    std::string tipos[] = {"INTEIRO", "FLUTUANTE", "CARACTERE", "SIMOUNAO", "VAZIO"};
+bool ehDeclaracaoDeExpressao() {
 
-    for (const std::string& tipo : tipos) {
-        if (entrada.substr(posicao, tipo.length()) == tipo) {
-            posicao += tipo.length();
-            return true;
+    aux = posicao;
+    ConsomeEspacoEmBranco();
+
+    if(!ehEspecificadorDeTipo()) {
+        posicao = aux;
+        ConsomeEspacoEmBranco();
+    }
+
+    if(!ehExpressaoDeAtribuicao()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 7) != "<TokPv>") {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    return true;
+}
+
+bool ehDeclaracaoDeSelecao() {
+
+    ConsomeEspacoEmBranco();
+
+    if (entrada.substr(posicao, 7) == "<TokIf>") {
+
+        posicao += 7;
+        ConsomeEspacoEmBranco();
+
+        if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
+            return false;
         }
+
+        posicao += 19;
+        ConsomeEspacoEmBranco();
+
+        if (!ehExpressaoDeAtribuicao()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+
+        if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
+            return false;
+        }
+
+        posicao += 20;
+        ConsomeEspacoEmBranco();
+
+        if (!ehDeclaracao()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+
+        if (entrada.substr(posicao, 9) == "<TokElse>") {
+
+            posicao += 9;
+            ConsomeEspacoEmBranco();
+
+            if (!ehDeclaracao()) {
+                return false;
+            }
+        }
+
+        ConsomeEspacoEmBranco();
+
+        return true;
     }
 
     return false;
 }
 
-// Função para reconhecer uma expressão
-bool ReconheceExpressao();
+bool ehDeclaracaoDeIteracao() {
 
-// Função para reconhecer um statement
-bool ReconheceDeclaracao() {
-    ConsomeEspacoEmBranco();
-
-    if (entrada.substr(posicao, 2) == "SE") {
-        posicao += 2;
-
+    if (entrada.substr(posicao, 11) == "<TokWhile>") {
+        
+        posicao += 11;
         ConsomeEspacoEmBranco();
 
-        if (entrada[posicao] != '(') {
+        if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
             return false;
         }
 
-        posicao++;
+        posicao += 19;
 
         ConsomeEspacoEmBranco();
 
-        if (!ReconheceExpressao()) {
+        if (!ehExpressaoDeAtribuicao()) {
             return false;
         }
 
         ConsomeEspacoEmBranco();
 
-        if (entrada[posicao] != ')') {
+        if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
             return false;
         }
 
-        posicao++;
+        posicao+= 20;
 
         ConsomeEspacoEmBranco();
 
-        if (!ReconheceDeclaracao()) {
+        if (!ehDeclaracao()) {
             return false;
-        }
-
-        ConsomeEspacoEmBranco();
-
-        if (entrada.substr(posicao, 5) == "SENAO") {
-            posicao += 5;
-
-            ConsomeEspacoEmBranco();
-
-            if (!ReconheceDeclaracao()) {
-                return false;
-            }
         }
 
         return true;
     }
-    else if (entrada.substr(posicao, 8) == "ENQUANTO") {
+
+    else if (entrada.substr(posicao, 8) == "<TokFor>") {
+
         posicao += 8;
-
         ConsomeEspacoEmBranco();
 
-        if (entrada[posicao] != '(') {
+        if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
             return false;
         }
 
-        posicao++;
-
+        posicao += 19;
         ConsomeEspacoEmBranco();
 
-        if (!ReconheceExpressao()) {
-            return false;
-        }
-
-        ConsomeEspacoEmBranco();
-
-        if (entrada[posicao] != ')') {
-            return false;
-        }
-
-        posicao++;
-
-        ConsomeEspacoEmBranco();
-
-        if (!ReconheceDeclaracao()) {
-            return false;
-        }
-
-        return true;
-    }
-    else if (entrada.substr(posicao, 4) == "PARA") {
-        posicao += 4;
-
-        ConsomeEspacoEmBranco();
-
-        if (entrada[posicao] != '(') {
-            return false;
-        }
-
-        posicao++;
-
-        ConsomeEspacoEmBranco();
-
-        if (!ReconheceDeclaracao()) {
+        if (!ehDeclaracaoDeExpressao()) {
             return false;
         }
 
         ConsomeEspacoEmBranco();
 
-        if (!ReconheceExpressao()) {
+        if (!ehExpressaoDeAtribuicao()) {
             return false;
         }
 
         ConsomeEspacoEmBranco();
 
-        if (entrada[posicao] != ';') {
-            return false;
-        }
-
-        posicao++;
-
-        ConsomeEspacoEmBranco();
-
-        if (!ReconheceExpressao()) {
-            return false;
-        }
-
-        ConsomeEspacoEmBranco();
-
-        if (entrada[posicao] != ')') {
-            return false;
-        }
-
-        posicao++;
-
-        ConsomeEspacoEmBranco();
-
-        if (!ReconheceDeclaracao()) {
-            return false;
-        }
-
-        return true;
-    }
-    else if (entrada.substr(posicao, 7) == "RETORNA") {
-        posicao += 7;
-
-        ConsomeEspacoEmBranco();
-
-        if (entrada[posicao] != ';') {
-            if (!ReconheceExpressao()) {
-                return false;
-            }
-
-            ConsomeEspacoEmBranco();
-        }
-
-        if (entrada[posicao] != ';') {
-            return false;
-        }
-
-        posicao++;
-
-        return true;
-    }
-    else if (entrada.substr(posicao, 4) == "FACA") {
-        posicao += 4;
-
-        ConsomeEspacoEmBranco();
-
-        if (!ReconheceDeclaracao()) {
-            return false;
-        }
-
-        ConsomeEspacoEmBranco();
-
-        if (entrada.substr(posicao, 7) != "ENQUANTO") {
+        if (entrada.substr(posicao, 7) != "<TokPv>") {
             return false;
         }
 
         posicao += 7;
-
         ConsomeEspacoEmBranco();
 
-        if (entrada[posicao] != '(') {
-            return false;
-        }
-
-        posicao++;
-
-        ConsomeEspacoEmBranco();
-
-        if (!ReconheceExpressao()) {
+        if (!ehExpressaoDeAtribuicao()) {
             return false;
         }
 
         ConsomeEspacoEmBranco();
 
-        if (entrada[posicao] != ')') {
+        if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
             return false;
         }
 
-        posicao++;
-
+        posicao += 20;
         ConsomeEspacoEmBranco();
 
-        if (entrada[posicao] != ';') {
+        if (!ehDeclaracao()) {
             return false;
         }
-
-        posicao++;
 
         return true;
-    }
-    else {
-        // Reconhecer statement como uma expressão seguida de ponto e vírgula
-        return ReconheceExpressao();
     }
 
     return false;
+}
+
+bool ehDeclaracaoDeRetorno() {
+
+    if(entrada.substr(posicao, 11) != "<TokReturn>") {
+        return false;
+    }
+    
+    posicao += 11;
+    ConsomeEspacoEmBranco();
+
+    if (entrada.substr(posicao, 7) != "<TokPv>") {
+
+        if (!ehExpressaoDeAtribuicao()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    if (entrada.substr(posicao, 7) != "<TokPv>") {
+        return false;
+    }
+
+    posicao+= 7;
+    ConsomeEspacoEmBranco();
+
+    return true;
+}
+
+bool ehExpressaoDeAtribuicao() {
+
+    ConsomeEspacoEmBranco();
+    int aux2;
+    aux = aux2 = posicao;
+
+    if(!ehExpressaoPosFixa()) {
+        posicao = aux;
+        if(ehExpressaoLogicaOU()) {
+            return true;
+        }
+    }
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 15) != "<TokAtribuicao>") {
+        posicao = aux2;
+        if(ehExpressaoLogicaOU()) {
+            return true;
+        }
+        return false;
+    }
+
+    posicao += 15;
+    ConsomeEspacoEmBranco();
+
+    if(!ehExpressaoDeAtribuicao()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    return true;
+}
+
+bool ehExpressaoLogicaOU() {
+
+    if(!ehExpressaoLogicaE()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 7) != "<TokOr>") {
+        return true;
+    }
+
+    else if(entrada.substr(posicao, 7) == "<TokOr>") {
+
+        posicao += 7;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoLogicaOU()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    return true;
+}
+
+bool ehExpressaoLogicaE() {
+
+    if(!ehExpressaoDeIgualdade()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 8) != "<TokAnd>") {
+        return true;
+    }
+
+    else if(entrada.substr(posicao, 8) == "<TokAnd>") {
+
+        posicao += 8;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoLogicaE()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    return true;
+}
+
+bool ehExpressaoDeIgualdade() {
+
+    if(!ehExpressaoRelacional()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 16) != "<TokComparacao>" && entrada.substr(posicao, 15) != "<TokDiferente>") {
+        return true;
+    }
+
+    else if(entrada.substr(posicao, 16) == "<TokComparacao>") {
+
+        posicao += 16;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoDeIgualdade()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    else if(entrada.substr(posicao, 15) == "<TokDiferente>") {
+
+        posicao += 15;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoDeIgualdade()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    return true;
+}
+
+bool ehExpressaoRelacional() {
+
+    if(!ehExpressaoAditiva()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 10) != "<TokMaior>" && entrada.substr(posicao, 10) != "<TokMenor>" &&
+    entrada.substr(posicao, 15) != "<TokMaiorIgual>" && entrada.substr(posicao, 15) != "<TokMenorIgual>") {
+        return true;
+    }
+
+    else if(entrada.substr(posicao, 10) == "<TokMaior>") {
+
+        posicao += 10;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoRelacional()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    else if(entrada.substr(posicao, 10) == "<TokMenor>") {
+
+        posicao += 10;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoRelacional()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    else if(entrada.substr(posicao, 15) == "<TokMaiorIgual>") {
+
+        posicao += 15;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoRelacional()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    else if(entrada.substr(posicao, 15) == "<TokMenorIgual>") {
+
+        posicao += 15;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoRelacional()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    return true;
+}
+
+bool ehExpressaoAditiva() {
+
+    if(!ehExpressaoMultiplicativa()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 9) != "<TokMais>" && entrada.substr(posicao, 10) != "<TokMenos>") {
+        return true;
+    }
+
+    else if(entrada.substr(posicao, 9) == "<TokMais>") {
+
+        posicao += 9;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoAditiva()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    else if(entrada.substr(posicao, 10) == "<TokMenos>") {
+
+        posicao += 10;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoAditiva()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    return true;
+}
+
+bool ehExpressaoMultiplicativa() {
+
+    if(!ehExpressaoPosFixa()) {
+        return false;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 10) != "<TokVezes>" && entrada.substr(posicao, 8) != "<TokDiv>") {
+        return true;
+    }
+
+    else if(entrada.substr(posicao, 10) == "<TokVezes>") {
+
+        posicao += 10;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoMultiplicativa()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    else if(entrada.substr(posicao, 8) == "<TokDiv>") {
+
+        posicao += 8;
+        ConsomeEspacoEmBranco();
+
+        if(!ehExpressaoMultiplicativa()) {
+            return false;
+        }
+
+        ConsomeEspacoEmBranco();
+    }
+
+    return true;
 }
 
 bool ehExpressaoPosFixa() {
@@ -479,9 +731,71 @@ bool ehExpressaoPosFixa() {
         return false;
     }
 
-    if(entrada.substr(posicao, 18) != "<TokAbreColchetes>" && entrada.substr(posicao, 18) != "<TokAbreColchetes>") {
-        return false;
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 18) != "<TokAbreColchetes>" && entrada.substr(posicao, 19) != "<TokAbreParenteses>" && 
+    entrada.substr(posicao, 6) != "<TokP>") {
+        return true;
     }
+
+    while(entrada.substr(posicao, 18) == "<TokAbreColchetes>" || entrada.substr(posicao, 19) == "<TokAbreParenteses>" || 
+    entrada.substr(posicao, 6) == "<TokP>") {
+
+        if(entrada.substr(posicao, 18) == "<TokAbreColchetes>") {
+
+            posicao += 18;
+            ConsomeEspacoEmBranco();
+
+            if(!ehExpressaoDeAtribuicao()) {
+                return false;
+            }
+
+            if(entrada.substr(posicao, 19) != "<TokFechaColchetes>") {
+                return false;
+            }
+
+            posicao += 19;
+            ConsomeEspacoEmBranco();
+        }
+
+        else if(entrada.substr(posicao, 19) == "<TokAbreParenteses>") {
+
+            posicao += 19;
+            ConsomeEspacoEmBranco();
+
+            if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
+
+                if(!ehListaDeExpressaoDeArgumento()) {
+                    return false;
+                }
+
+                ConsomeEspacoEmBranco();
+            }
+
+            if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
+                return false;
+            }
+
+            posicao += 20;
+            ConsomeEspacoEmBranco();
+        }
+
+        else if(entrada.substr(posicao, 6) == "<TokP>") {
+
+            posicao += 6;
+            ConsomeEspacoEmBranco();
+
+            if(!ehIdentificador()) {
+                return false;
+            }
+
+            ConsomeEspacoEmBranco();
+            
+        }
+    }
+
+    return true;
+
 }
 
 bool ehListaDeExpressaoDeArgumento() {
@@ -505,12 +819,14 @@ bool ehListaDeExpressaoDeArgumento() {
 }
 
 bool ehExpressaoPrimaria() {
+
+    ConsomeEspacoEmBranco();
     
     if(!ehIdentificador() && !ehConstante() && entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
         return false;
     }
 
-    if(entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
+    if(entrada.substr(posicao, 19) == "<TokAbreParenteses>") {
 
         posicao += 19;
         ConsomeEspacoEmBranco();
@@ -551,6 +867,7 @@ bool ehIdentificador() {
     ConsomeEspacoEmBranco();
 
     if(entrada.substr(posicao, 5) != "TokID") {
+        posicao--;
         return false;
     }
 
@@ -658,10 +975,9 @@ bool ehCaractere() {
     return true;
 }
 
+bool AnalisarSintatico(string nomedoarquivo) {
 
-int main() {
-
-    std::ifstream arquivo("teste2.txt"); // Abre o arquivo para leitura
+    std::ifstream arquivo(nomedoarquivo); // Abre o arquivo para leitura
 
     if (arquivo.is_open()) { // Verifica se o arquivo foi aberto com sucesso
         std::string conteudo((std::istreambuf_iterator<char>(arquivo)), std::istreambuf_iterator<char>());
@@ -669,12 +985,12 @@ int main() {
         // Processa o conteúdo do arquivo
         entrada = conteudo;
 
-        if(ehIdentificador()) {
-            std::cout << "Analise bem-sucedida";
+        if(ehPrograma()) {
+            return true;
         }
 
         else {
-            std::cout << "Analise mal-sucedida";
+            return false;
         }
 
         arquivo.close(); // Fecha o arquivo
@@ -683,5 +999,5 @@ int main() {
         std::cout << "Erro ao abrir o arquivo." << std::endl;
     }
 
-    return 0;
+    return false;
 }

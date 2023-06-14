@@ -18,13 +18,33 @@ bool ehParametro();
 
 bool ehDeclaracaoComposta();
 
+bool ehEspecificadorDeTipo();
+
 bool ehListaDeDeclaracao();
 
 bool ehDeclaracao();
 
+bool ehDeclaracaoDeExpressao();
+
+bool ehDeclaracaoDeSelecao();
+
+bool ehDeclaracaoDeIteracao();
+
+bool ehDeclaracaoDeRetorno();
+
 bool ehExpressaoDeAtribuicao();
 
-bool ehEspecificadorDeTipo();
+bool ehExpressaoLogicaOU();
+
+bool ehExpressaoLogicaE();
+
+bool ehExpressaoDeIgualdade();
+
+bool ehExpressaoRelacional();
+
+bool ehExpressaoAditiva();
+
+bool ehExpressaoMultiplicativa();
 
 bool ehExpressaoPosFixa();
 

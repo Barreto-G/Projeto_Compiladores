@@ -1,8 +1,7 @@
-<TokMain><TokAbreParenteses><TokFechaParenteses><TokAbreChaves>
+<TokInt><TokMain><TokAbreParenteses><TokFechaParenteses><TokAbreChaves>
 <TokInt><TokID,1><TokAtribuicao><TokNumint,2><TokPv>
 <TokInt><TokID,3><TokAtribuicao><TokNumint,4><TokPv>
 <TokInt><TokID,5><TokPv>
 <TokID,6><TokAtribuicao><TokID,7><TokMais><TokID,8><TokPv>
-<TokID,9><TokID,10><TokAtribuicao><TokCaractere><TokPv>
-<TokReturn><TokNumint,12><TokPv>
+<TokReturn><TokNumint,9><TokPv>
 <TokFechaChaves>

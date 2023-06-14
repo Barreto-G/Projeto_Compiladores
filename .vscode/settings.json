@@ -59,5 +59,6 @@
         "string_view": "cpp",
         "numbers": "cpp"
     },
-    "C_Cpp.dimInactiveRegions": false
+    "C_Cpp.dimInactiveRegions": false,
+    "cmake.configureOnOpen": true
 }
