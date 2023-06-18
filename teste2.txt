@@ -3,7 +3,9 @@
 
 <TokInt><TokID,4><TokAtribuicao><TokNumint,5><TokPv>
 <TokInt><TokID,6><TokPv>
-<TokID,7><TokAtribuicao><TokID,8><TokMais><TokID,9><TokWhile><TokAbreParenteses><TokID,10><TokMenor><TokID,11><TokFechaParenteses><TokAbreChaves>
+<TokID,7><TokAtribuicao><TokID,8><TokMais><TokID,9>
+<TokWhile><TokAbreParenteses><TokID,10><TokMenor><TokID,11><TokFechaParenteses><TokAbreChaves>
 <TokID,12><TokAtribuicao><TokID,13><TokMais><TokNumint,14><TokPv>
+<TokFechaChaves>
 <TokReturn><TokNumint,15><TokPv>
 <TokFechaChaves>

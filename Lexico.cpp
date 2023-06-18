@@ -34,11 +34,6 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
     while(arquivo1.eof() == false) {
         lexema.clear();
         caracter = arquivo1.get();
-        if (caracter == '\n') {
-                count_linha++;
-                count_coluna = 0;
-                arquivo2 << "\n";
-        }
         if (caracter >= 48 && caracter <= 57) {
             while (caracter >= 48 && caracter <= 57) {
                 lexema.push_back(caracter);
@@ -156,7 +151,7 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
             if (caracter == '\n') {
                 count_linha++;
                 count_coluna = 0;
-                arquivo2 << "<TokAbreChaves>\n";
+                arquivo2 << "<TokAbreChaves>";
             }
             else {
                 cout << "Erro lexico encontrado na linha:" << count_linha << " coluna:" << count_coluna << " (esperado quebra de linha)";
@@ -169,7 +164,7 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
             if (caracter == '\n' || arquivo1.eof() == true) {
                 count_linha++;
                 count_coluna = 0;
-                arquivo2 << "<TokFechaChaves>\n";
+                arquivo2 << "<TokFechaChaves>";
             }
             else {
                 cout << "Erro lexico encontrado na linha:" << count_linha << " coluna:" << count_coluna << " (esperado quebra de linha)";
@@ -182,12 +177,16 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
             if (caracter == '\n') {
                 count_linha++;
                 count_coluna = 0;
-                arquivo2 << "<TokPv>\n";
+                arquivo2 << "<TokPv>";
             }
             else {
                 cout << "Erro lexico encontrado na linha:" << count_linha << " coluna:" << count_coluna << " (esperado quebra de linha)";
                 return false;
             }
+        }if (caracter == '\n') {
+                count_linha++;
+                count_coluna = 0;
+                arquivo2 << "\n";
         }
 
 

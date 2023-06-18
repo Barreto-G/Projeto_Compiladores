@@ -17,12 +17,6 @@ int main(){
     programa_valido = analisarLexico(table, reservadas);
     if (programa_valido == false) return 0;
     cout << "\n\n ANALISE LEXICA CONCLUIDA: NENHUM ERRO ENCONTRADO\n\n";
-    if(AnalisarSintatico("teste2.txt") == true) {
-        cout << "Analise Sintatica bem-sucedida";
-    }
-    else {
-        cout << "Analise Sintatica mal-sucedida";
-    }
 
     
     delete(reservadas);
