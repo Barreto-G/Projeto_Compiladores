@@ -1,7 +1,9 @@
-<TokInt><TokMain><TokAbreParenteses><TokFechaParenteses><TokAbreChaves>
-<TokInt><TokID,1><TokAtribuicao><TokNumint,2><TokPv>
-<TokInt><TokID,3><TokAtribuicao><TokNumint,4><TokPv>
-<TokInt><TokID,5><TokPv>
-<TokID,6><TokAtribuicao><TokID,7><TokMais><TokID,8><TokPv>
-<TokReturn><TokNumint,9><TokPv>
+<TokInt><TokMain><TokAbreParenteses><TokInt><TokID,1><TokFechaParenteses><TokAbreChaves>
+<TokInt><TokID,2><TokAtribuicao><TokNumint,3><TokPv>
+
+<TokInt><TokID,4><TokAtribuicao><TokNumint,5><TokPv>
+<TokInt><TokID,6><TokPv>
+<TokID,7><TokAtribuicao><TokID,8><TokMais><TokID,9><TokWhile><TokAbreParenteses><TokID,10><TokMenor><TokID,11><TokFechaParenteses><TokAbreChaves>
+<TokID,12><TokAtribuicao><TokID,13><TokMais><TokNumint,14><TokPv>
+<TokReturn><TokNumint,15><TokPv>
 <TokFechaChaves>

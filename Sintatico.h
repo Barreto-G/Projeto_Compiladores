@@ -1,10 +1,18 @@
 #include <iostream>
 #include "TabelaDeSimbolos.cpp"
+#include "TabelaDeSimbolos.cpp"
 
 // Variáveis globais
-std::string entrada;    // entrada a ser analisado
+std::string entrada;    // entrada a ser analisada
 int posicao = 0;     // Posição atual no entrada
-int aux = 0;
+int aux = 0;    //Variável auxiliar
+TabelaDeSimbolos* tabela;
+
+bool ehEspacoEmBranco(char c);
+
+void ConsomeEspacoEmBranco();
+
+int AcharLinha(int pos);
 
 bool ehPrograma();
 
