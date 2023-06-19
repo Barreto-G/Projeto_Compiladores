@@ -10,7 +10,7 @@
 
 using namespace std;
 
-bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
+bool analisarLexico(string caminho,TabelaDeSimbolos *table, TabelaChave *reservadas) {
     char caracter;
     bool flutuante = false;
     string lexema;
@@ -19,13 +19,12 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
     int count_coluna = 0;
     int count_id = 0;
     
-    ifstream arquivo1("teste.txt");
+    ifstream arquivo1(caminho);
     if (!arquivo1.is_open()) {
-    cout << "Arquivo do programa nao pode ser aberto";
-    return 0;
+    throw 2;
     }
 
-    ofstream arquivo2("teste2.txt", ofstream::out);
+    ofstream arquivo2("saida_lexica.txt", ofstream::out);
     if (!arquivo2.is_open()) {
     cout << "Arquivo de tokens nao pode ser aberto";
     return 0;

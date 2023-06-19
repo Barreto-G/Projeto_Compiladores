@@ -81,9 +81,6 @@ void TabelaDeSimbolos::insere(string type, string identificador, string value, i
             atual->prox = novo;
         }
     }
-    else{
-        cout<< "Item ja esta na tabela"<< endl;
-    }
 
 }
 

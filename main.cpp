@@ -9,29 +9,54 @@
 
 using namespace std;
 
-int main(){
-    TabelaChave *reservadas = new TabelaChave();
-    TabelaDeSimbolos *table = new TabelaDeSimbolos(1000);
-    bool programa_valido = true;
+int main(int argc, char *argv[]){
 
-    programa_valido = analisarLexico(table, reservadas);
-    if (programa_valido == false) {
-        remove("teste2.txt");
-        return 0;
+    try{
+        string caminho_arquivo;
+        if(argc>1){
+            caminho_arquivo = argv[1];
+        }
+        else throw 1;
+        
+        
+        TabelaChave *reservadas = new TabelaChave();
+        TabelaDeSimbolos *table = new TabelaDeSimbolos(500);
+        bool programa_valido = true;
+
+        programa_valido = analisarLexico(caminho_arquivo, table, reservadas);
+        if (programa_valido == false) {
+            remove("saida_lexica.txt");
+            return 0;
+        }
+        cout << "\n\n Analise lexica concluida com sucesso.\n\n";
+
+        if(AnalisarSintatico("saida_lexica.txt", table)) {
+            cout << "\nAnalise sintatica concluida com sucesso.\n";
+        }
+
+        else {
+            cout << "\nAnalise sintatica mal-sucedida.\n";
+        }
+        
+        delete(reservadas);
+        delete(table);
+        remove("saida_lexica.txt");
+
+
     }
-    cout << "\n\n Analise lexica concluida com sucesso.\n\n";
-
-    if(AnalisarSintatico("teste2.txt", table)) {
-        cout << "\nAnalise sintatica concluida com sucesso.\n";
+    catch(int erro){
+        if(erro == 1){
+            cout<<"Nenhum caminho foi passado como argumento";
+        }
+        else if(erro ==2){
+            cout<< "Nao foi possivel abrir o arquivo, caminho passado eh invalido";
+        }
+        
     }
-
-    else {
-        cout << "\nAnalise sintatica mal-sucedida.\n";
+    catch(...){
+        cout<<"Erro desconhecido";
     }
     
-    delete(reservadas);
-    delete(table);
-    //remove("teste2.txt");
     
     return 0;
 }
