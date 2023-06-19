@@ -82,9 +82,7 @@ void TabelaChave::insere(std::string cadeia, std::string categoria, std::string 
         }
     }
     else{
-        cout<< "Item ja esta na tabela"<< endl;
     }
-
 }
 
 string TabelaChave::recupera(string cadeia){

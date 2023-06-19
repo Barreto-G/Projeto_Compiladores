@@ -15,11 +15,14 @@ int main(){
     bool programa_valido = true;
 
     programa_valido = analisarLexico(table, reservadas);
-    if (programa_valido == false) return 0;
-    cout << "\n\n ANALISE LEXICA CONCLUIDA: NENHUM ERRO ENCONTRADO\n\n";
+    if (programa_valido == false) {
+        remove("teste2.txt");
+        return 0;
+    }
+    cout << "\n\n Analise lexica concluida com sucesso.\n\n";
 
     if(AnalisarSintatico("teste2.txt", table)) {
-        cout << "\nAnalise sintatica bem-sucedida.\n";
+        cout << "\nAnalise sintatica concluida com sucesso.\n";
     }
 
     else {

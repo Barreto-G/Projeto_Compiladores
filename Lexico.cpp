@@ -68,7 +68,7 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
                 count_coluna++;
                 caracter = arquivo1.get();
             }
-            if(!isspace(caracter) && caracter != ';' && caracter != ']' && caracter != ')') {
+            if(!isspace(caracter) && caracter != ';' && caracter != ']' && caracter != ')'  && caracter != ',') {
                     cout << "Erro lexico encontrado na linha:" << count_linha << " coluna:" << count_coluna << " (identificador ou funcao invalida)";
                     return false;
             }
@@ -84,6 +84,10 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
                 }
             }
 
+        }
+        if (caracter == ',') {
+                count_coluna++;
+                arquivo2 << "<TokV>";
         }
         if (caracter == 34) {
             count_coluna++;
@@ -183,7 +187,8 @@ bool analisarLexico(TabelaDeSimbolos *table, TabelaChave *reservadas) {
                 cout << "Erro lexico encontrado na linha:" << count_linha << " coluna:" << count_coluna << " (esperado quebra de linha)";
                 return false;
             }
-        }if (caracter == '\n') {
+        }
+        if (caracter == '\n') {
                 count_linha++;
                 count_coluna = 0;
                 arquivo2 << "\n";
