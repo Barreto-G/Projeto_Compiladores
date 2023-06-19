@@ -1,6 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <string>
 #include "Sintatico.h"
 
 bool ehEspacoEmBranco(char c) {
@@ -31,26 +28,21 @@ bool ehPrograma() {
     while(true) {
 
         aux = posicao;
+        int cont = 0;
 
-        if(!ehParametro()) {
+        if(!ehDeclaracaoDeExpressao()) {
             break;
-        }
-
-        ConsomeEspacoEmBranco();
-
-        if(entrada.substr(posicao, 7) != "<TokPv>") {
-            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um ; antes da nova declaracao\n";
-        }
-
-        else {
-            posicao += 7;
         }
     }
 
     posicao = aux;
+    ConsomeEspacoEmBranco();
 
     while(true) {
+
         aux = posicao;
+        int cont = 0;
+
         if(!ehDefinicaoDeFuncao()) {
             break;
         }
@@ -138,7 +130,7 @@ bool ehPrincipal() {
 
 bool ehDefinicaoDeFuncao() {
 
-    if (!ehEspecificadorDeTipo()) {
+    if (!ehEspecificadorDeTipoDeFuncao()) {
         return false;
     }
 
@@ -198,6 +190,22 @@ bool ehDefinicaoDeFuncao() {
 }
 
 bool ehEspecificadorDeTipo() {
+
+    ConsomeEspacoEmBranco();
+
+    std::string tipos[] = {"<TokInt>", "<TokFloat>", "<TokChar>", "<TokBool>"};
+
+    for (const std::string& tipo : tipos) {
+        if (entrada.substr(posicao, tipo.length()) == tipo) {
+            posicao += tipo.length();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ehEspecificadorDeTipoDeFuncao() {
 
     ConsomeEspacoEmBranco();
 
@@ -302,7 +310,7 @@ bool ehListaDeDeclaracao(){
 bool ehDeclaracao() {
 
     if(!ehDeclaracaoDeExpressao() && !ehDeclaracaoComposta() && !ehDeclaracaoDeSelecao() && 
-    !ehDeclaracaoDeIteracao() && !ehDeclaracaoDeRetorno()) {
+    !ehDeclaracaoDeIteracao() && !ehDeclaracaoDeRetorno() && !ehDeclaracaoDeRegraDeTres()) {
         return false;
     }
 
@@ -315,6 +323,12 @@ bool ehDeclaracaoDeExpressao() {
 
     if(!ehEspecificadorDeTipo()) {
         posicao = aux;
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 9) == "<TokMain>") {
+        return false;
     }
 
     if(!ehExpressaoDeAtribuicao()) {
@@ -500,6 +514,73 @@ bool ehDeclaracaoDeRetorno() {
 
     else {
         posicao += 7;
+    }
+
+    return true;
+}
+
+bool ehDeclaracaoDeRegraDeTres() {
+
+    ConsomeEspacoEmBranco();
+
+    if (entrada.substr(posicao, 16) == "<TokRegraDeTres>") {
+
+        posicao += 16;
+        ConsomeEspacoEmBranco();
+
+        if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um (\n";
+        }
+
+        else {
+            posicao+= 19;
+        }
+
+        if (!ehExpressaoPrimaria()) {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um identificador, constante ou expressao\n";
+        }
+
+        ConsomeEspacoEmBranco();
+
+        if(entrada.substr(posicao, 6) != "<TokV>") {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma virgula separando os parametros\n";
+        }
+
+        else{
+            posicao += 6;
+        }
+
+        if (!ehExpressaoPrimaria()) {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um identificador, constante ou expressao\n";
+        }
+
+        ConsomeEspacoEmBranco();
+
+        if(entrada.substr(posicao, 6) != "<TokV>") {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma virgula separando os parametros\n";
+        }
+
+        else{
+            posicao += 6;
+        }
+
+        if (!ehExpressaoPrimaria()) {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um identificador, constante ou expressao\n";
+        }
+
+        ConsomeEspacoEmBranco();
+
+        if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um )\n";
+        }
+
+        else {
+            posicao+= 20;
+        }
+    }
+
+    else {
+        return false;
     }
 
     return true;
@@ -984,6 +1065,8 @@ bool ehCaractere() {
 bool AnalisarSintatico(string nomedoarquivo, TabelaDeSimbolos* table) {
 
     std::ifstream arquivo(nomedoarquivo); // Abre o arquivo para leitura
+
+    ArvoreSintatica* Arvore = new ArvoreSintatica();
 
     if (arquivo.is_open()) { // Verifica se o arquivo foi aberto com sucesso
         std::string conteudo((std::istreambuf_iterator<char>(arquivo)), std::istreambuf_iterator<char>());

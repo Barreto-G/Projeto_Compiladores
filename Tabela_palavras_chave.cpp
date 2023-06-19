@@ -165,6 +165,7 @@ void TabelaChave::inserirPalavrasChave(){
     insere("FLUTUANTE", "TokFloat", "TIPO");
     insere("CARACTERE", "TokChar", "TIPO");
     insere("SIMOUNAO", "TokBool", "TIPO");
+    insere("VAZIO", "TokVoid", "TIPO");
 
     //PALAVRAS RESERVADAS PARA OPERADORES
     insere("MAIS", "TokMais", "OPERADOR");

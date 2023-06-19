@@ -9,5 +9,4 @@
 <TokWhile><TokAbreParenteses><TokID,12><TokMenor><TokID,13><TokFechaParenteses><TokAbreChaves>
 <TokID,14><TokAtribuicao><TokID,15><TokMais><TokNumint,16>
 
-<TokReturn><TokNumint,17><TokPv>
 <TokFechaChaves>

@@ -1,11 +1,17 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "TabelaDeSimbolos.cpp"
 #include "Tabela_palavras_chave.cpp"
+#include "ArvoreSintatica.cpp"
+
+using namespace std;
 
 // Variáveis globais
-std::string entrada;    // entrada a ser analisada
+string entrada;    // entrada a ser analisada
 int posicao = 0;     // Posição atual no entrada
 int aux = 0;    //Variável auxiliar
+int valor = 0;
 TabelaDeSimbolos* tabela;
 
 bool ehEspacoEmBranco(char c);
@@ -28,6 +34,8 @@ bool ehDeclaracaoComposta();
 
 bool ehEspecificadorDeTipo();
 
+bool ehEspecificadorDeTipoDeFuncao();
+
 bool ehListaDeDeclaracao();
 
 bool ehDeclaracao();
@@ -39,6 +47,8 @@ bool ehDeclaracaoDeSelecao();
 bool ehDeclaracaoDeIteracao();
 
 bool ehDeclaracaoDeRetorno();
+
+bool ehDeclaracaoDeRegraDeTres();
 
 bool ehExpressaoDeAtribuicao();
 
