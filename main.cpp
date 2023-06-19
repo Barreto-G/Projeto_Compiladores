@@ -18,6 +18,13 @@ int main(){
     if (programa_valido == false) return 0;
     cout << "\n\n ANALISE LEXICA CONCLUIDA: NENHUM ERRO ENCONTRADO\n\n";
 
+    if(AnalisarSintatico("teste2.txt", table)) {
+        cout << "\nAnalise sintatica bem-sucedida.\n";
+    }
+
+    else {
+        cout << "\nAnalise sintatica mal-sucedida.\n";
+    }
     
     delete(reservadas);
     delete(table);

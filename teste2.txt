@@ -1,11 +1,13 @@
-<TokInt><TokMain><TokAbreParenteses><TokInt><TokID,1><TokFechaParenteses><TokAbreChaves>
-<TokInt><TokID,2><TokAtribuicao><TokNumint,3><TokPv>
+<TokChar><TokID,1>
 
+<TokInt><TokMain><TokAbreParenteses><TokInt><TokID,2><TokInt><TokID,3><TokAbreChaves>
 <TokInt><TokID,4><TokAtribuicao><TokNumint,5><TokPv>
-<TokInt><TokID,6><TokPv>
-<TokID,7><TokAtribuicao><TokID,8><TokMais><TokID,9>
-<TokWhile><TokAbreParenteses><TokID,10><TokMenor><TokID,11><TokFechaParenteses><TokAbreChaves>
-<TokID,12><TokAtribuicao><TokID,13><TokMais><TokNumint,14><TokPv>
-<TokFechaChaves>
-<TokReturn><TokNumint,15><TokPv>
+
+<TokInt><TokID,6><TokAtribuicao><TokNumint,7>
+<TokInt><TokID,8>
+<TokID,9><TokAtribuicao><TokID,10><TokMais><TokID,11>
+<TokWhile><TokAbreParenteses><TokID,12><TokMenor><TokID,13><TokFechaParenteses><TokAbreChaves>
+<TokID,14><TokAtribuicao><TokID,15><TokMais><TokNumint,16>
+
+<TokReturn><TokNumint,17><TokPv>
 <TokFechaChaves>

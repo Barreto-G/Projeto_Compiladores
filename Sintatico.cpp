@@ -28,24 +28,40 @@ int AcharLinha(int pos) {
 
 bool ehPrograma() {
 
-    int aux = posicao;
+    while(true) {
 
-    while(!ehPrincipal()) {
+        aux = posicao;
 
-        posicao = aux;
-
-        if(!ehDefinicaoDeFuncao()) {
-            return false;
+        if(!ehParametro()) {
+            break;
         }
 
         ConsomeEspacoEmBranco();
 
-        if(posicao >= entrada.length()) {
-            return false;
+        if(entrada.substr(posicao, 7) != "<TokPv>") {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um ; antes da nova declaracao\n";
+        }
+
+        else {
+            posicao += 7;
         }
     }
 
+    posicao = aux;
+
+    while(true) {
+        aux = posicao;
+        if(!ehDefinicaoDeFuncao()) {
+            break;
+        }
+    }
+
+    posicao = aux;
     ConsomeEspacoEmBranco();
+
+    if(!ehPrincipal()) {
+        cout << "Erro - nao ha funcao PRINCIPAL\n";
+    }
 
     if(posicao >= entrada.length())
             return true;
@@ -82,10 +98,7 @@ bool ehPrincipal() {
     ConsomeEspacoEmBranco();
 
     if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-
-        if(!ehListaDeParametros()) {
-            return false;
-        }
+        ehListaDeParametros();
     }
 
     ConsomeEspacoEmBranco();
@@ -98,8 +111,26 @@ bool ehPrincipal() {
         posicao+= 20;
     }
 
-    if(!ehDeclaracaoComposta()) {
-        return false;
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 15) != "<TokAbreChaves>") {
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um {\n";
+    }
+
+    posicao += 15;
+
+    if(!ehListaDeDeclaracao()) {
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma declaracao\n";
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 16) != "<TokFechaChaves>") {
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um }\n";
+    }
+
+    else {
+        posicao += 16;
     }
     
     return true;
@@ -111,41 +142,24 @@ bool ehDefinicaoDeFuncao() {
         return false;
     }
 
-    if (!ehIdentificador()) {
+    if (entrada.substr(posicao, 9) == "<TokMain>" || !ehIdentificador()) {
         return false;
     }
 
     ConsomeEspacoEmBranco();
 
-    if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
+   if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
         cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um (\n";
     }
 
     else {
         posicao+= 19;
     }
-
+    
     ConsomeEspacoEmBranco();
 
-    if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-
-        while (true) {
-
-            if (!ehEspecificadorDeTipo()) {
-                cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um especificador de tipo\n";
-            }
-
-            if (!ehIdentificador()) {
-                cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um identificador\n";
-            }
-
-            if (entrada.substr(posicao, 6) != "<TokV>") {
-                posicao ++;
-                break;
-            }
-
-            posicao++;
-        }
+    if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
+        ehListaDeParametros();
     }
 
     ConsomeEspacoEmBranco();
@@ -154,12 +168,30 @@ bool ehDefinicaoDeFuncao() {
         cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um )\n";
     }
 
-    else{
-        posicao += 20;
+    else {
+        posicao+= 20;
     }
 
-    if (!ehDeclaracao()) {
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 15) != "<TokAbreChaves>") {
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um {\n";
+    }
+
+    posicao += 15;
+
+    if(!ehListaDeDeclaracao()) {
         cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma declaracao\n";
+    }
+
+    ConsomeEspacoEmBranco();
+
+    if(entrada.substr(posicao, 16) != "<TokFechaChaves>") {
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um }\n";
+    }
+
+    else {
+        posicao += 16;
     }
 
     return true;
@@ -169,7 +201,7 @@ bool ehEspecificadorDeTipo() {
 
     ConsomeEspacoEmBranco();
 
-    std::string tipos[] = {"<TokInt>", "<TokFloat>", "<TokChar>", "<TokBool>"};
+    std::string tipos[] = {"<TokInt>", "<TokFloat>", "<TokChar>", "<TokBool>", "<TokVoid>"};
 
     for (const std::string& tipo : tipos) {
         if (entrada.substr(posicao, tipo.length()) == tipo) {
@@ -194,7 +226,7 @@ bool ehListaDeParametros() {
     }
 
     else if(entrada.substr(posicao, 6) != "<TokV>") {
-        std::cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma virgula separando os parametros\n";
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma virgula separando os parametros\n";
     }
 
     else{
@@ -203,6 +235,10 @@ bool ehListaDeParametros() {
 
     if(!ehListaDeParametros()) {
         return false;
+    }
+
+    if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um )\n";
     }
 
     return true;
@@ -225,11 +261,13 @@ bool ehDeclaracaoComposta() {
 
     ConsomeEspacoEmBranco();
 
-    if(entrada.substr(posicao, 15) != "<TokAbreChaves>") {
+    if (entrada.substr(posicao, 15) != "<TokAbreChaves>") {
         return false;
     }
 
-    posicao += 15;
+    else {
+        posicao+= 15;
+    }
 
     if(!ehListaDeDeclaracao()) {
         return false;
@@ -237,12 +275,12 @@ bool ehDeclaracaoComposta() {
 
     ConsomeEspacoEmBranco();
 
-    if(entrada.substr(posicao, 16) != "<TokFechaChaves>") {
-        return false;
+    if (entrada.substr(posicao, 16) != "<TokFechaChaves>") {
+        cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um }\n";
     }
 
     else {
-        posicao += 16;
+        posicao+= 16;
     }
 
     return true;
@@ -323,7 +361,7 @@ bool ehDeclaracaoDeSelecao() {
 
         posicao += 20;
 
-        if (!ehDeclaracao()) {
+        if (!ehDeclaracaoComposta()) {
             return false;
         }
 
@@ -333,7 +371,7 @@ bool ehDeclaracaoDeSelecao() {
 
             posicao += 9;
 
-            if (!ehDeclaracao()) {
+            if (!ehDeclaracaoComposta()) {
                 return false;
             }
         }
@@ -354,10 +392,12 @@ bool ehDeclaracaoDeIteracao() {
         ConsomeEspacoEmBranco();
 
         if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
-            return false;
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um (\n";
         }
 
-        posicao += 19;
+        else {
+            posicao+= 19;
+        }
 
         if (!ehExpressaoDeAtribuicao()) {
             return false;
@@ -366,12 +406,14 @@ bool ehDeclaracaoDeIteracao() {
         ConsomeEspacoEmBranco();
 
         if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-            return false;
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um )\n";
         }
 
-        posicao+= 20;
+        else {
+            posicao+= 20;
+        }
 
-        if (!ehDeclaracao()) {
+        if (!ehDeclaracaoComposta()) {
             return false;
         }
 
@@ -384,10 +426,12 @@ bool ehDeclaracaoDeIteracao() {
         ConsomeEspacoEmBranco();
 
         if (entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
-            return false;
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um (\n";
         }
 
-        posicao += 19;
+        else {
+            posicao+= 19;
+        }
 
         if (!ehDeclaracaoDeExpressao()) {
             return false;
@@ -412,12 +456,14 @@ bool ehDeclaracaoDeIteracao() {
         ConsomeEspacoEmBranco();
 
         if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-            return false;
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um )\n";
         }
 
-        posicao += 20;
+        else {
+            posicao+= 20;
+        }
 
-        if (!ehDeclaracao()) {
+        if (!ehDeclaracaoComposta()) {
             return false;
         }
 

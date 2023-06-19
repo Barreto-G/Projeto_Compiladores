@@ -1,6 +1,6 @@
 #include <iostream>
 #include "TabelaDeSimbolos.cpp"
-#include "TabelaDeSimbolos.cpp"
+#include "Tabela_palavras_chave.cpp"
 
 // Variáveis globais
 std::string entrada;    // entrada a ser analisada
