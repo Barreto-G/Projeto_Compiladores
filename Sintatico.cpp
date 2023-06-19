@@ -577,6 +577,16 @@ bool ehDeclaracaoDeRegraDeTres() {
         else {
             posicao+= 20;
         }
+
+        ConsomeEspacoEmBranco();
+
+        if(entrada.substr(posicao, 7) != "<TokPv>") {
+            cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um ;\n";
+        }
+
+        else{
+            posicao += 7;
+        }
     }
 
     else {
