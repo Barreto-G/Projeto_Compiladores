@@ -89,12 +89,6 @@ bool ehPrincipal() {
     
     ConsomeEspacoEmBranco();
 
-    if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-        ehListaDeParametros();
-    }
-
-    ConsomeEspacoEmBranco();
-
     if (entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
         cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um )\n";
     }
