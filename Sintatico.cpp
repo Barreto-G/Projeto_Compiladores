@@ -23,16 +23,22 @@ int AcharLinha(int pos) {
     return linha;
 }
 
-bool ehPrograma() {
+bool ehPrograma(No* raiz) {
+
+    int i = 0;
 
     while(true) {
 
         aux = posicao;
-        int cont = 0;
+        Token* DeclaracaoDeExpressao = new Token("REGRA", "DECLARACAODEEXPRESSAO", to_string(escopo), 0, 0);
 
-        if(!ehDeclaracaoDeExpressao()) {
+        raiz->filhos.push_back(criarNo(DeclaracaoDeExpressao));
+
+        if(!ehDeclaracaoDeExpressao(nullptr)) {
+            raiz->filhos.pop_back();
             break;
         }
+        i++;
     }
 
     posicao = aux;
@@ -41,17 +47,26 @@ bool ehPrograma() {
     while(true) {
 
         aux = posicao;
-        int cont = 0;
+        Token* DefinicaoDeFuncao = new Token("REGRA", "DEFINICAODEFUNCAO", to_string(escopo), 0, 0);
 
-        if(!ehDefinicaoDeFuncao()) {
+        raiz->filhos.push_back(criarNo(DefinicaoDeFuncao));
+
+        if(!ehDefinicaoDeFuncao(nullptr)) {
+            raiz->filhos.pop_back();
             break;
         }
+        i++;
     }
 
     posicao = aux;
     ConsomeEspacoEmBranco();
 
-    if(!ehPrincipal()) {
+    Token* Principal = new Token("REGRA", "PRINCIPAL", to_string(escopo), 0, 0);
+
+    raiz->filhos.push_back(criarNo(Principal));
+
+    if(!ehPrincipal(nullptr)) {
+        raiz->filhos.pop_back();
         cout << "Erro - nao ha funcao PRINCIPAL\n";
     }
 
@@ -61,7 +76,9 @@ bool ehPrograma() {
     return false;
 }
 
-bool ehPrincipal() {
+bool ehPrincipal(No* raiz) {
+
+    int i = 0;
 
     ConsomeEspacoEmBranco();
 
@@ -105,7 +122,7 @@ bool ehPrincipal() {
 
     posicao += 15;
 
-    if(!ehListaDeDeclaracao()) {
+    if(!ehListaDeDeclaracao(nullptr)) {
         cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma declaracao\n";
     }
 
@@ -122,13 +139,15 @@ bool ehPrincipal() {
     return true;
 }
 
-bool ehDefinicaoDeFuncao() {
+bool ehDefinicaoDeFuncao(No* raiz) {
 
-    if (!ehEspecificadorDeTipoDeFuncao()) {
+    int i = 0;
+
+    if (!ehEspecificadorDeTipoDeFuncao(nullptr)) {
         return false;
     }
 
-    if (entrada.substr(posicao, 9) == "<TokMain>" || !ehIdentificador()) {
+    if (entrada.substr(posicao, 9) == "<TokMain>" || !ehIdentificador(nullptr)) {
         return false;
     }
 
@@ -145,7 +164,7 @@ bool ehDefinicaoDeFuncao() {
     ConsomeEspacoEmBranco();
 
     if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
-        ehListaDeParametros();
+        ehListaDeParametros(nullptr);
     }
 
     ConsomeEspacoEmBranco();
@@ -166,7 +185,7 @@ bool ehDefinicaoDeFuncao() {
 
     posicao += 15;
 
-    if(!ehListaDeDeclaracao()) {
+    if(!ehListaDeDeclaracao(nullptr)) {
         cout << "Erro - linha " << AcharLinha(posicao) << ": esperado uma declaracao\n";
     }
 
@@ -183,7 +202,7 @@ bool ehDefinicaoDeFuncao() {
     return true;
 }
 
-bool ehEspecificadorDeTipo() {
+bool ehEspecificadorDeTipo(No* raiz) {
 
     ConsomeEspacoEmBranco();
 
@@ -199,7 +218,7 @@ bool ehEspecificadorDeTipo() {
     return false;
 }
 
-bool ehEspecificadorDeTipoDeFuncao() {
+bool ehEspecificadorDeTipoDeFuncao(No* raiz) {
 
     ConsomeEspacoEmBranco();
 
@@ -215,9 +234,11 @@ bool ehEspecificadorDeTipoDeFuncao() {
     return false;
 }
 
-bool ehListaDeParametros() {
+bool ehListaDeParametros(No* raiz) {
+
+    int i = 0;
     
-    if(!ehParametro()) {
+    if(!ehParametro(nullptr)) {
         return false;
     }
 
@@ -235,7 +256,7 @@ bool ehListaDeParametros() {
         posicao += 6;
     }
 
-    if(!ehListaDeParametros()) {
+    if(!ehListaDeParametros(nullptr)) {
         return false;
     }
 
@@ -246,20 +267,24 @@ bool ehListaDeParametros() {
     return true;
 }
 
-bool ehParametro() {
+bool ehParametro(No* raiz) {
 
-    if(!ehEspecificadorDeTipo()) {
+    int i = 0;
+
+    if(!ehEspecificadorDeTipo(nullptr)) {
         return false;
     }
 
-    if(!ehIdentificador()) {
+    if(!ehIdentificador(nullptr)) {
         return false;
     }
 
     return true;
 }
 
-bool ehDeclaracaoComposta() {
+bool ehDeclaracaoComposta(No* raiz) {
+
+    int i = 0;
 
     ConsomeEspacoEmBranco();
 
@@ -271,7 +296,7 @@ bool ehDeclaracaoComposta() {
         posicao+= 15;
     }
 
-    if(!ehListaDeDeclaracao()) {
+    if(!ehListaDeDeclaracao(nullptr)) {
         return false;
     }
 
@@ -288,34 +313,42 @@ bool ehDeclaracaoComposta() {
     return true;
 }
 
-bool ehListaDeDeclaracao(){
+bool ehListaDeDeclaracao(No* raiz){
 
-    if(!ehDeclaracao()) {
+    int i = 0;
+
+    if(!ehDeclaracao(nullptr)) {
         return false;
     }
-
-    if(!ehListaDeDeclaracao() && entrada[posicao] != '<') {
-        return false;
-    }
-
-    return true;
-}
-
-bool ehDeclaracao() {
-
-    if(!ehDeclaracaoDeExpressao() && !ehDeclaracaoComposta() && !ehDeclaracaoDeSelecao() && 
-    !ehDeclaracaoDeIteracao() && !ehDeclaracaoDeRetorno() && !ehDeclaracaoDeRegraDeTres()) {
-        return false;
-    }
-
-    return true;
-}
-
-bool ehDeclaracaoDeExpressao() {
 
     aux = posicao;
 
-    if(!ehEspecificadorDeTipo()) {
+    if(!ehListaDeDeclaracao(nullptr)) {
+        posicao = aux;
+    }
+
+    return true;
+}
+
+bool ehDeclaracao(No* raiz) {
+
+    int i = 0;
+
+    if(!ehDeclaracaoDeExpressao(nullptr) && !ehDeclaracaoComposta(nullptr) && !ehDeclaracaoDeSelecao(nullptr) && 
+    !ehDeclaracaoDeIteracao(nullptr) && !ehDeclaracaoDeRetorno(nullptr) && !ehDeclaracaoDeRegraDeTres(nullptr)) {
+        return false;
+    }
+
+    return true;
+}
+
+bool ehDeclaracaoDeExpressao(No* raiz) {
+
+    int i = 0;
+
+    aux = posicao;
+
+    if(!ehEspecificadorDeTipo(nullptr)) {
         posicao = aux;
     }
 
@@ -325,7 +358,7 @@ bool ehDeclaracaoDeExpressao() {
         return false;
     }
 
-    if(!ehExpressaoDeAtribuicao()) {
+    if(!ehExpressaoDeAtribuicao(nullptr)) {
         return false;
     }
 
@@ -342,7 +375,9 @@ bool ehDeclaracaoDeExpressao() {
     return true;
 }
 
-bool ehDeclaracaoDeSelecao() {
+bool ehDeclaracaoDeSelecao(No* raiz) {
+
+    int i = 0;
 
     ConsomeEspacoEmBranco();
 
@@ -357,7 +392,7 @@ bool ehDeclaracaoDeSelecao() {
 
         posicao += 19;
 
-        if (!ehExpressaoDeAtribuicao()) {
+        if (!ehExpressaoDeAtribuicao(nullptr)) {
             return false;
         }
 
@@ -369,7 +404,7 @@ bool ehDeclaracaoDeSelecao() {
 
         posicao += 20;
 
-        if (!ehDeclaracaoComposta()) {
+        if (!ehDeclaracaoComposta(nullptr)) {
             return false;
         }
 
@@ -379,7 +414,7 @@ bool ehDeclaracaoDeSelecao() {
 
             posicao += 9;
 
-            if (!ehDeclaracaoComposta()) {
+            if (!ehDeclaracaoComposta(nullptr)) {
                 return false;
             }
         }
@@ -390,7 +425,9 @@ bool ehDeclaracaoDeSelecao() {
     return false;
 }
 
-bool ehDeclaracaoDeIteracao() {
+bool ehDeclaracaoDeIteracao(No* raiz) {
+
+    int i = 0;
 
     ConsomeEspacoEmBranco();
 
@@ -407,7 +444,7 @@ bool ehDeclaracaoDeIteracao() {
             posicao+= 19;
         }
 
-        if (!ehExpressaoDeAtribuicao()) {
+        if (!ehExpressaoDeAtribuicao(nullptr)) {
             return false;
         }
 
@@ -421,7 +458,7 @@ bool ehDeclaracaoDeIteracao() {
             posicao+= 20;
         }
 
-        if (!ehDeclaracaoComposta()) {
+        if (!ehDeclaracaoComposta(nullptr)) {
             return false;
         }
 
@@ -441,11 +478,11 @@ bool ehDeclaracaoDeIteracao() {
             posicao+= 19;
         }
 
-        if (!ehDeclaracaoDeExpressao()) {
+        if (!ehDeclaracaoDeExpressao(nullptr)) {
             return false;
         }
 
-        if (!ehExpressaoDeAtribuicao()) {
+        if (!ehExpressaoDeAtribuicao(nullptr)) {
             return false;
         }
 
@@ -457,7 +494,7 @@ bool ehDeclaracaoDeIteracao() {
 
         posicao += 7;
 
-        if (!ehExpressaoDeAtribuicao()) {
+        if (!ehExpressaoDeAtribuicao(nullptr)) {
             return false;
         }
 
@@ -471,7 +508,7 @@ bool ehDeclaracaoDeIteracao() {
             posicao+= 20;
         }
 
-        if (!ehDeclaracaoComposta()) {
+        if (!ehDeclaracaoComposta(nullptr)) {
             return false;
         }
 
@@ -481,7 +518,9 @@ bool ehDeclaracaoDeIteracao() {
     return false;
 }
 
-bool ehDeclaracaoDeRetorno() {
+bool ehDeclaracaoDeRetorno(No* raiz) {
+
+    int i = 0;
 
     ConsomeEspacoEmBranco();
 
@@ -494,7 +533,7 @@ bool ehDeclaracaoDeRetorno() {
 
     if (entrada.substr(posicao, 7) != "<TokPv>") {
 
-        if (!ehExpressaoDeAtribuicao()) {
+        if (!ehExpressaoDeAtribuicao(nullptr)) {
             return false;
         }
     }
@@ -513,7 +552,9 @@ bool ehDeclaracaoDeRetorno() {
     return true;
 }
 
-bool ehDeclaracaoDeRegraDeTres() {
+bool ehDeclaracaoDeRegraDeTres(No* raiz) {
+
+    int i = 0;
 
     ConsomeEspacoEmBranco();
 
@@ -530,7 +571,7 @@ bool ehDeclaracaoDeRegraDeTres() {
             posicao+= 19;
         }
 
-        if (!ehExpressaoPrimaria()) {
+        if (!ehExpressaoPrimaria(nullptr)) {
             cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um identificador, constante ou expressao\n";
         }
 
@@ -544,7 +585,7 @@ bool ehDeclaracaoDeRegraDeTres() {
             posicao += 6;
         }
 
-        if (!ehExpressaoPrimaria()) {
+        if (!ehExpressaoPrimaria(nullptr)) {
             cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um identificador, constante ou expressao\n";
         }
 
@@ -558,7 +599,7 @@ bool ehDeclaracaoDeRegraDeTres() {
             posicao += 6;
         }
 
-        if (!ehExpressaoPrimaria()) {
+        if (!ehExpressaoPrimaria(nullptr)) {
             cout << "Erro - linha " << AcharLinha(posicao) << ": esperado um identificador, constante ou expressao\n";
         }
 
@@ -590,16 +631,18 @@ bool ehDeclaracaoDeRegraDeTres() {
     return true;
 }
 
-bool ehExpressaoDeAtribuicao() {
+bool ehExpressaoDeAtribuicao(No* raiz) {
+
+    int i = 0;
 
     int aux2;
     aux = aux2 = posicao;
 
-    if(!ehExpressaoPosFixa()) {
+    if(!ehExpressaoPosFixa(nullptr)) {
 
         posicao = aux;
 
-        if(ehExpressaoLogicaOU()) {
+        if(ehExpressaoLogicaOU(nullptr)) {
             return true;
         }
 
@@ -612,7 +655,7 @@ bool ehExpressaoDeAtribuicao() {
 
         posicao = aux2;
 
-        if(ehExpressaoLogicaOU()) {
+        if(ehExpressaoLogicaOU(nullptr)) {
             return true;
         }
 
@@ -621,16 +664,18 @@ bool ehExpressaoDeAtribuicao() {
 
     posicao += 15;
 
-    if(!ehExpressaoDeAtribuicao()) {
+    if(!ehExpressaoDeAtribuicao(nullptr)) {
         return false;
     }
 
     return true;
 }
 
-bool ehExpressaoLogicaOU() {
+bool ehExpressaoLogicaOU(No* raiz) {
 
-    if(!ehExpressaoLogicaE()) {
+    int i = 0;
+
+    if(!ehExpressaoLogicaE(nullptr)) {
         return false;
     }
 
@@ -644,7 +689,7 @@ bool ehExpressaoLogicaOU() {
 
         posicao += 7;
 
-        if(!ehExpressaoLogicaOU()) {
+        if(!ehExpressaoLogicaOU(nullptr)) {
             return false;
         }
     }
@@ -652,9 +697,11 @@ bool ehExpressaoLogicaOU() {
     return true;
 }
 
-bool ehExpressaoLogicaE() {
+bool ehExpressaoLogicaE(No* raiz) {
 
-    if(!ehExpressaoDeIgualdade()) {
+    int i = 0;
+
+    if(!ehExpressaoDeIgualdade(nullptr)) {
         return false;
     }
 
@@ -668,7 +715,7 @@ bool ehExpressaoLogicaE() {
 
         posicao += 8;
 
-        if(!ehExpressaoLogicaE()) {
+        if(!ehExpressaoLogicaE(nullptr)) {
             return false;
         }
     }
@@ -676,9 +723,11 @@ bool ehExpressaoLogicaE() {
     return true;
 }
 
-bool ehExpressaoDeIgualdade() {
+bool ehExpressaoDeIgualdade(No* raiz) {
 
-    if(!ehExpressaoRelacional()) {
+    int i = 0;
+
+    if(!ehExpressaoRelacional(nullptr)) {
         return false;
     }
 
@@ -693,7 +742,7 @@ bool ehExpressaoDeIgualdade() {
         posicao += 15;
         ConsomeEspacoEmBranco();
 
-        if(!ehExpressaoDeIgualdade()) {
+        if(!ehExpressaoDeIgualdade(nullptr)) {
             return false;
         }
     }
@@ -702,7 +751,7 @@ bool ehExpressaoDeIgualdade() {
 
         posicao += 14;
 
-        if(!ehExpressaoDeIgualdade()) {
+        if(!ehExpressaoDeIgualdade(nullptr)) {
             return false;
         }
     }
@@ -710,9 +759,11 @@ bool ehExpressaoDeIgualdade() {
     return true;
 }
 
-bool ehExpressaoRelacional() {
+bool ehExpressaoRelacional(No* raiz) {
 
-    if(!ehExpressaoAditiva()) {
+    int i = 0;
+
+    if(!ehExpressaoAditiva(nullptr)) {
         return false;
     }
 
@@ -727,7 +778,7 @@ bool ehExpressaoRelacional() {
 
         posicao += 10;
 
-        if(!ehExpressaoRelacional()) {
+        if(!ehExpressaoRelacional(nullptr)) {
             return false;
         }
     }
@@ -736,7 +787,7 @@ bool ehExpressaoRelacional() {
 
         posicao += 10;
 
-        if(!ehExpressaoRelacional()) {
+        if(!ehExpressaoRelacional(nullptr)) {
             return false;
         }
     }
@@ -745,7 +796,7 @@ bool ehExpressaoRelacional() {
 
         posicao += 15;
 
-        if(!ehExpressaoRelacional()) {
+        if(!ehExpressaoRelacional(nullptr)) {
             return false;
         }
     }
@@ -754,7 +805,7 @@ bool ehExpressaoRelacional() {
 
         posicao += 15;
 
-        if(!ehExpressaoRelacional()) {
+        if(!ehExpressaoRelacional(nullptr)) {
             return false;
         }
     }
@@ -762,9 +813,11 @@ bool ehExpressaoRelacional() {
     return true;
 }
 
-bool ehExpressaoAditiva() {
+bool ehExpressaoAditiva(No* raiz) {
 
-    if(!ehExpressaoMultiplicativa()) {
+    int i = 0;
+
+    if(!ehExpressaoMultiplicativa(nullptr)) {
         return false;
     }
 
@@ -778,7 +831,7 @@ bool ehExpressaoAditiva() {
 
         posicao += 9;
 
-        if(!ehExpressaoAditiva()) {
+        if(!ehExpressaoAditiva(nullptr)) {
             return false;
         }
     }
@@ -787,7 +840,7 @@ bool ehExpressaoAditiva() {
 
         posicao += 10;
 
-        if(!ehExpressaoAditiva()) {
+        if(!ehExpressaoAditiva(nullptr)) {
             return false;
         }
     }
@@ -795,9 +848,11 @@ bool ehExpressaoAditiva() {
     return true;
 }
 
-bool ehExpressaoMultiplicativa() {
+bool ehExpressaoMultiplicativa(No* raiz) {
 
-    if(!ehExpressaoPosFixa()) {
+    int i = 0;
+
+    if(!ehExpressaoPosFixa(nullptr)) {
         return false;
     }
 
@@ -811,7 +866,7 @@ bool ehExpressaoMultiplicativa() {
 
         posicao += 10;
 
-        if(!ehExpressaoMultiplicativa()) {
+        if(!ehExpressaoMultiplicativa(nullptr)) {
             return false;
         }
     }
@@ -820,7 +875,7 @@ bool ehExpressaoMultiplicativa() {
 
         posicao += 8;
 
-        if(!ehExpressaoMultiplicativa()) {
+        if(!ehExpressaoMultiplicativa(nullptr)) {
             return false;
         }
     }
@@ -828,9 +883,11 @@ bool ehExpressaoMultiplicativa() {
     return true;
 }
 
-bool ehExpressaoPosFixa() {
+bool ehExpressaoPosFixa(No* raiz) {
 
-    if(!ehExpressaoPrimaria()) {
+    int i = 0;
+
+    if(!ehExpressaoPrimaria(nullptr)) {
         return false;
     }
 
@@ -850,7 +907,7 @@ bool ehExpressaoPosFixa() {
 
             posicao += 18;
 
-            if(!ehExpressaoDeAtribuicao()) {
+            if(!ehExpressaoDeAtribuicao(nullptr)) {
                 return false;
             }
 
@@ -872,7 +929,7 @@ bool ehExpressaoPosFixa() {
 
             if(entrada.substr(posicao, 20) != "<TokFechaParenteses>") {
 
-                if(!ehListaDeExpressaoDeArgumento()) {
+                if(!ehListaDeExpressaoDeArgumento(nullptr)) {
                     return false;
                 }
             }
@@ -892,7 +949,7 @@ bool ehExpressaoPosFixa() {
 
             posicao += 6;
 
-            if(!ehIdentificador()) {
+            if(!ehIdentificador(nullptr)) {
                 return false;
             }
         }
@@ -902,9 +959,11 @@ bool ehExpressaoPosFixa() {
 
 }
 
-bool ehListaDeExpressaoDeArgumento() {
+bool ehListaDeExpressaoDeArgumento(No* raiz) {
 
-    if(!ehExpressaoDeAtribuicao()) {
+    int i = 0;
+
+    if(!ehExpressaoDeAtribuicao(nullptr)) {
         return false;
     }
 
@@ -916,18 +975,20 @@ bool ehListaDeExpressaoDeArgumento() {
 
     posicao += 6;
 
-    if(!ehListaDeExpressaoDeArgumento()) {
+    if(!ehListaDeExpressaoDeArgumento(nullptr)) {
         return false;
     }
     
     return true;
 }
 
-bool ehExpressaoPrimaria() {
+bool ehExpressaoPrimaria(No* raiz) {
+
+    int i = 0;
 
     ConsomeEspacoEmBranco();
     
-    if(!ehIdentificador() && !ehConstante() && entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
+    if(!ehIdentificador(nullptr) && !ehConstante(nullptr) && entrada.substr(posicao, 19) != "<TokAbreParenteses>") {
         return false;
     }
 
@@ -935,7 +996,7 @@ bool ehExpressaoPrimaria() {
 
         posicao += 19;
 
-        if(!ehExpressaoDeAtribuicao()) {
+        if(!ehExpressaoDeAtribuicao(nullptr)) {
             return false;
         }
 
@@ -953,16 +1014,18 @@ bool ehExpressaoPrimaria() {
     return true;
 }
 
-bool ehConstante() {
+bool ehConstante(No* raiz) {
 
-    if(!ehInteiro() && !ehFlutuante() && !ehCaractere()) {
+    int i = 0;
+
+    if(!ehInteiro(nullptr) && !ehFlutuante(nullptr) && !ehCaractere(nullptr)) {
         return false;
     }
 
     return true;
 }
 
-bool ehIdentificador() {
+bool ehIdentificador(No* raiz) {
 
     ConsomeEspacoEmBranco();
 
@@ -988,7 +1051,7 @@ bool ehIdentificador() {
     return true;
 }
 
-bool ehInteiro() {
+bool ehInteiro(No* raiz) {
 
     ConsomeEspacoEmBranco();
 
@@ -1014,7 +1077,7 @@ bool ehInteiro() {
     return true;
 }
 
-bool ehFlutuante() {
+bool ehFlutuante(No* raiz) {
 
     ConsomeEspacoEmBranco();
 
@@ -1040,7 +1103,7 @@ bool ehFlutuante() {
     return true;
 }
 
-bool ehCaractere() {
+bool ehCaractere(No* raiz) {
 
     ConsomeEspacoEmBranco();
 
@@ -1070,7 +1133,7 @@ bool AnalisarSintatico(string nomedoarquivo, TabelaDeSimbolos* table) {
 
     std::ifstream arquivo(nomedoarquivo); // Abre o arquivo para leitura
 
-    ArvoreSintatica* Arvore = new ArvoreSintatica();
+    No* Arvore = nullptr;
 
     if (arquivo.is_open()) { // Verifica se o arquivo foi aberto com sucesso
         std::string conteudo((std::istreambuf_iterator<char>(arquivo)), std::istreambuf_iterator<char>());
@@ -1079,11 +1142,16 @@ bool AnalisarSintatico(string nomedoarquivo, TabelaDeSimbolos* table) {
         entrada = conteudo;
         tabela = table;
 
-        if(ehPrograma()) {
+        Token* programa = new Token("REGRA", "PROGRAMA", to_string(escopo), 0, 0);
+
+        Arvore = criarNo(programa);
+
+        if(ehPrograma(Arvore)) {
             return true;
         }
 
         else {
+            deletarArvore(Arvore);
             return false;
         }
 

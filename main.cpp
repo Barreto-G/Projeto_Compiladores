@@ -13,10 +13,7 @@ int main(int argc, char *argv[]){
 
     try{
         string caminho_arquivo;
-        if(argc>1){
-            caminho_arquivo = argv[1];
-        }
-        else throw 1;
+        caminho_arquivo = "teste.txt";
         
         
         TabelaChave *reservadas = new TabelaChave();

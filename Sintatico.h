@@ -12,6 +12,7 @@ string entrada;    // entrada a ser analisada
 int posicao = 0;     // Posição atual no entrada
 int aux = 0;    //Variável auxiliar
 int valor = 0;
+int escopo = 0;
 TabelaDeSimbolos* tabela;
 
 bool ehEspacoEmBranco(char c);
@@ -20,62 +21,62 @@ void ConsomeEspacoEmBranco();
 
 int AcharLinha(int pos);
 
-bool ehPrograma();
+bool ehPrograma(No* raiz);
 
-bool ehPrincipal();
+bool ehPrincipal(No* raiz);
 
-bool ehDefinicaoDeFuncao();
+bool ehDefinicaoDeFuncao(No* raiz);
 
-bool ehListaDeParametros();
+bool ehListaDeParametros(No* raiz);
 
-bool ehParametro();
+bool ehParametro(No* raiz);
 
-bool ehDeclaracaoComposta();
+bool ehDeclaracaoComposta(No* raiz);
 
-bool ehEspecificadorDeTipo();
+bool ehEspecificadorDeTipo(No* raiz);
 
-bool ehEspecificadorDeTipoDeFuncao();
+bool ehEspecificadorDeTipoDeFuncao(No* raiz);
 
-bool ehListaDeDeclaracao();
+bool ehListaDeDeclaracao(No* raiz);
 
-bool ehDeclaracao();
+bool ehDeclaracao(No* raiz);
 
-bool ehDeclaracaoDeExpressao();
+bool ehDeclaracaoDeExpressao(No* raiz);
 
-bool ehDeclaracaoDeSelecao();
+bool ehDeclaracaoDeSelecao(No* raiz);
 
-bool ehDeclaracaoDeIteracao();
+bool ehDeclaracaoDeIteracao(No* raiz);
 
-bool ehDeclaracaoDeRetorno();
+bool ehDeclaracaoDeRetorno(No* raiz);
 
-bool ehDeclaracaoDeRegraDeTres();
+bool ehDeclaracaoDeRegraDeTres(No* raiz);
 
-bool ehExpressaoDeAtribuicao();
+bool ehExpressaoDeAtribuicao(No* raiz);
 
-bool ehExpressaoLogicaOU();
+bool ehExpressaoLogicaOU(No* raiz);
 
-bool ehExpressaoLogicaE();
+bool ehExpressaoLogicaE(No* raiz);
 
-bool ehExpressaoDeIgualdade();
+bool ehExpressaoDeIgualdade(No* raiz);
 
-bool ehExpressaoRelacional();
+bool ehExpressaoRelacional(No* raiz);
 
-bool ehExpressaoAditiva();
+bool ehExpressaoAditiva(No* raiz);
 
-bool ehExpressaoMultiplicativa();
+bool ehExpressaoMultiplicativa(No* raiz);
 
-bool ehExpressaoPosFixa();
+bool ehExpressaoPosFixa(No* raiz);
 
-bool ehListaDeExpressaoDeArgumento();
+bool ehListaDeExpressaoDeArgumento(No* raiz);
 
-bool ehExpressaoPrimaria();
+bool ehExpressaoPrimaria(No* raiz);
 
-bool ehConstante();
+bool ehConstante(No* raiz);
 
-bool ehIdentificador();
+bool ehIdentificador(No* raiz);
 
-bool ehInteiro();
+bool ehInteiro(No* raiz);
 
-bool ehFlutuante();
+bool ehFlutuante(No* raiz);
 
-bool ehCaractere();
+bool ehCaractere(No* raiz);

@@ -4,10 +4,10 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "enter program name, for example ${workspaceFolder}/a.exe",
-            "args": [],
+            "program": "C:\Users\gabri\Desktop\Faculdade\6_Periodo\Compiladores\Trabalho\Projeto_Compiladores/main.exe",
+            "args": ["teste.txt"],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "$Projeto_Compiladores",
             "environment": [],
             "console": "externalTerminal"
         }

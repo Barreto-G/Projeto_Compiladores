@@ -152,7 +152,6 @@ bool analisarLexico(string caminho,TabelaDeSimbolos *table, TabelaChave *reserva
             count_coluna++;
             caracter = arquivo1.get();
             if (caracter == '\n') {
-                count_linha++;
                 count_coluna = 0;
                 arquivo2 << "<TokAbreChaves>";
             }
@@ -165,7 +164,6 @@ bool analisarLexico(string caminho,TabelaDeSimbolos *table, TabelaChave *reserva
             count_coluna++;
             caracter = arquivo1.get();
             if (caracter == '\n' || arquivo1.eof() == true) {
-                count_linha++;
                 count_coluna = 0;
                 arquivo2 << "<TokFechaChaves>";
             }
@@ -178,7 +176,6 @@ bool analisarLexico(string caminho,TabelaDeSimbolos *table, TabelaChave *reserva
             count_coluna++;
             caracter = arquivo1.get();
             if (caracter == '\n') {
-                count_linha++;
                 count_coluna = 0;
                 arquivo2 << "<TokPv>";
             }
