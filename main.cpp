@@ -10,10 +10,13 @@
 using namespace std;
 
 int main(int argc, char *argv[]){
-
+    
     try{
         string caminho_arquivo;
-        caminho_arquivo = "teste.txt";
+        if(argc>1){
+            caminho_arquivo = argv[1];
+        }
+        else throw 1;
         
         
         TabelaChave *reservadas = new TabelaChave();
@@ -53,7 +56,5 @@ int main(int argc, char *argv[]){
     catch(...){
         cout<<"Erro desconhecido";
     }
-    
-    
     return 0;
 }
